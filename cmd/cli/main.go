@@ -4,6 +4,9 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strings"
+
+	"github.com/rizlantamima/image2pdf"
 )
 
 func main()  {
@@ -21,6 +24,16 @@ func main()  {
 		fmt.Println("at least you need provide 1 image file as arguments, example : image2pdf <path/to/image>")
 		os.Exit(0);
 	}
+
+	inputImage :=  getArgsWithoutFlags(os.Args[1:])
+
+	config := image2pdf.New(inputImage, "")
+
+	err := config.Convert()
+	if err != nil {
+		panic(err)
+	}
+	
 }
 
 func printHelp() {
@@ -31,4 +44,16 @@ func printHelp() {
 	fmt.Println()
 	fmt.Println("Options:")
 	fmt.Println("  -h    Show the application's explanation")
+}
+
+func getArgsWithoutFlags(args []string) []string {
+	var filteredArgs []string
+
+	for _, arg := range args {
+		if !strings.HasPrefix(arg, "-") {
+			filteredArgs = append(filteredArgs, arg)
+		}
+	}
+
+	return filteredArgs
 }
